@@ -1,0 +1,447 @@
+Editorial Portfolio Redesign — Design + Technical Specification
+
+(Transforming your current “filterable grid + lightbox” HTML into a magazine-quality editorial experience.)
+
+0) Current state (what we’re upgrading)
+
+Your existing portfolio is a single-page app with:
+
+Sticky header + “chips” for type (all/photo/video) and album chips generated in JS, plus search + sort.
+
+A responsive auto-fill grid of cards (minmax(220px, 1fr)), each with 4:3 aspect ratio, overlay-on-hover, and lazy-loaded thumbnails.
+
+A basic lightbox that swaps in either <img> or <video controls autoplay>.
+
+Assets are defined in a JS array with type, src, thumb, title, album, date (plus some videos).
+
+Design direction: keep your data model and filtering, but add an editorial layer: “issues”, “stories”, “spreads”, typography-led pacing, and cinematic video treatment.
+
+1) Editorial concept & IA (information architecture)
+Core mental model
+
+Album = Issue (e.g., “70s” becomes an Issue)
+
+Asset = Page/Spread unit inside the Issue
+
+Two modes:
+
+Index mode (curated, magazine-like “table of contents”)
+
+Reading mode (scrolling editorial story with spreads)
+
+Navigation upgrades (still static HTML-friendly)
+
+Issue selector (album chips stay, but styled like magazine sections)
+
+TOC panel for each Issue: Hero + Features + Grid “contact sheet”
+
+Reading progression: next/prev spread + keyboard arrows (you already have arrow navigation in the lightbox; extend it to editorial pages).
+
+2) Page layout templates (5 editorial templates)
+
+Below are “templates” you can apply to assets (or groups of assets) via metadata (e.g., layout: "cover" | "spread" | "mosaic" | ...) or via curated rules (first item in an album becomes cover, etc.).
+
+TEMPLATE A — Cover / Opener (Full-bleed + masthead)
+
+Use: first impression for an Issue (album).
+Mood: fashion magazine cover meets photography monograph.
+
+Desktop wireframe
+┌───────────────────────────────────────────────────────────────┐
+│ (full-bleed hero image / video poster)                        │
+│                                                               │
+│      [ISSUE TITLE / ALBUM]                                    │
+│      BIG DISPLAY TYPE (masthead)                              │
+│      thin kicker line / date range                            │
+│                                                               │
+│                         (small navigation)                    │
+│                         TOC  •  INDEX  •  ABOUT               │
+└───────────────────────────────────────────────────────────────┘
+
+Key design details
+
+Full-bleed media with subtle grain + vignette (CSS overlay).
+
+Typography overlay using mix-blend-mode (optional) for dramatic contrast.
+
+Minimal UI chrome (hide chips here; show a compact “Issue nav” only).
+
+Responsive behavior
+
+Mobile: masthead becomes stacked, bottom-aligned, with tighter leading.
+
+TEMPLATE B — Table of Contents (Editorial Index)
+
+Use: each Issue gets a TOC with curated “features”, then a refined grid.
+
+Desktop wireframe
+┌───────────────────────────────┬───────────────────────────────┐
+│ ISSUE TITLE                    │ FEATURE IMAGE (tall)          │
+│ short editorial intro          │                               │
+│                               │  Feature #1 (title + meta)     │
+│ CONTENTS                       │  Feature #2                   │
+│ 01 Feature story title         │  Feature #3                   │
+│ 02 ...                         │                               │
+│ 03 ...                         │                               │
+└───────────────────────────────┴───────────────────────────────┘
+│ Contact Sheet (small refined thumbnails, tight captions)       │
+└───────────────────────────────────────────────────────────────┘
+
+Key design details
+
+TOC entries use typographic hierarchy (numbers, titles, metadata).
+
+“Contact sheet” grid: smaller, tighter, less hover gimmick—more “editorial archive”.
+
+Implementation note
+
+You already generate album chips and render the grid from ASSETS.
+This template is mostly presentation + ordering: curate a few hero items per album, then render the rest as contact sheet.
+
+TEMPLATE C — Feature Story Spread (Asymmetrical Grid + type-led pacing)
+
+Use: hero story inside an Issue; best for 6–20 images that deserve narrative flow.
+
+Desktop wireframe (12-col grid)
+┌───────────────────────────────────────────────────────────────┐
+│ [KICKER]                                                       │
+│ BIG STORY TITLE (2–3 lines)         pull-quote / caption block │
+│ deck text (short)                                             │
+├───────────────────────────────┬───────────────────────────────┤
+│ full-bleed image (8 cols)     │ vertical image (4 cols)        │
+│ caption sits on baseline grid │ caption                        │
+├───────────────────────────────┴───────────────────────────────┤
+│ 3-up row (equal) with tight captions                           │
+└───────────────────────────────────────────────────────────────┘
+
+Key design details
+
+12-column editorial grid, generous margins, controlled negative space.
+
+Captions align to a baseline rhythm (so pages feel “typeset”, not “web app”).
+
+Occasional large pull quotes (even if generated from your notes later).
+
+Responsive behavior
+
+Tablet: collapse to 8-col grid with fewer asym splits.
+
+Mobile: single column; preserve “editorial beats” using spacing tokens.
+
+TEMPLATE D — Gallery Mosaic (Magazine “layout desk” collage)
+
+Use: mid-issue pacing—visual rhythm without feeling like Instagram tiles.
+
+Desktop wireframe
+┌───────────────────────────────────────────────────────────────┐
+│ [Section title]                                                 │
+│                                                               │
+│ ┌───────────────┐ ┌───────────────────────────────┐          │
+│ │ tall image     │ │ wide image (hero)             │          │
+│ └───────────────┘ └───────────────────────────────┘          │
+│ ┌───────────────────────┐ ┌───────────────┐                  │
+│ │ medium image           │ │ small image   │                  │
+│ └───────────────────────┘ └───────────────┘                  │
+│ captions are sparse + intentional                             │
+└───────────────────────────────────────────────────────────────┘
+
+Key design details
+
+Mixed aspect ratios; avoid uniform card look.
+
+Hover is minimal: soft lift + caption fade, not “big overlay gradient everywhere”.
+
+Implementation note
+
+Your current grid forces every card into aspect-ratio: 4/3.
+For this template, remove forced aspect ratio and let items span grid areas.
+
+TEMPLATE E — Video Feature (Editorial player page)
+
+Use: videos become “features”, not just another tile.
+
+Desktop wireframe
+┌───────────────────────────────────────────────────────────────┐
+│ VIDEO (full width, cinematic)                                 │
+│ [custom controls overlay minimal]                             │
+├───────────────────────────────┬───────────────────────────────┤
+│ Title + short editorial text   │ Credits / meta / related still │
+│ (kicker, deck, caption style)  │ thumbnails (2–4)              │
+└───────────────────────────────┴───────────────────────────────┘
+
+Design details
+
+Poster frame treated like a magazine still (grain overlay + clean play glyph).
+
+Controls are minimal: play/pause, progress, mute, fullscreen.
+
+On mobile, fall back to native controls (because users expect it and it’s reliable).
+
+Implementation note
+
+Right now videos are opened in the lightbox using <video controls autoplay playsinline>.
+We’ll keep <video> but swap to a custom UI shell.
+
+3) Responsive editorial layout system (CSS strategy)
+3.1 Layout primitives (the foundation)
+
+A) Page container
+
+max-width for text pages (e.g., 1120–1320px)
+
+full-bleed sections that break out of container
+
+B) Editorial grid
+
+Desktop: 12 columns
+
+Tablet: 8 columns
+
+Mobile: 4 columns or single column (depending on template)
+
+C) Baseline rhythm
+
+Define a vertical rhythm token and stick to it for captions/body.
+
+3.2 Technical requirements
+
+Use CSS Grid for editorial templates (spans, asymmetry).
+
+Use Flexbox only for small UI groups (chips, inline meta).
+
+Use container queries when possible for components (so spreads adapt inside layouts).
+
+Use fluid typography with clamp() for sizes + margins.
+
+Suggested token system (extends your current :root variables) 
+
+portfolio
+
+:root{
+  --page-max: 1320px;
+  --gutter: clamp(16px, 4vw, 56px);
+  --grid-gap: clamp(10px, 1.2vw, 18px);
+
+  --baseline: 8px;
+
+  --font-display: "Canela", "Didot", "Bodoni Moda", serif; /* swap per licensing */
+  --font-text: "Söhne", "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --step--1: clamp(12px, 1vw, 13px);
+  --step-0:  clamp(14px, 1.2vw, 16px);
+  --step-1:  clamp(18px, 1.6vw, 22px);
+  --step-2:  clamp(26px, 2.5vw, 36px);
+  --step-3:  clamp(38px, 4.5vw, 64px);
+}
+
+Editorial grid utility
+.ed-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+@media (max-width: 980px){
+  .ed-grid{ grid-template-columns: repeat(8, minmax(0, 1fr)); }
+}
+@media (max-width: 680px){
+  .ed-grid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+3.3 Image handling requirements (magazine-grade)
+
+Replace single thumb usage with responsive images:
+
+srcset + sizes for thumbnails and spreads
+
+keep your existing lazy-load + IntersectionObserver pattern (good base).
+
+Add optional metadata per asset:
+
+orientation, aspect, caption, credit, location, tags, storyRank
+(Even if you don’t fill them now, the system should support them.)
+
+4) Video integration plan (editorial sophistication)
+4.1 Player design requirements
+
+A “cinema shell” component:
+
+Poster frame (thumbnail) with play glyph
+
+On play: fade poster → video
+
+Controls appear on interaction, auto-hide otherwise
+
+Keep it tasteful:
+
+No neon progress bars, no heavy shadows, no “YouTube vibe”
+
+4.2 Technical requirements
+
+<video preload="metadata" playsinline> always
+
+Use poster="..." so the page loads fast and looks curated
+
+Use IntersectionObserver to:
+
+pause videos when offscreen
+
+optionally auto-play muted only for hero loops (if you decide to)
+
+4.3 Transition effects
+
+Use CSS opacity + transform fades (150–250ms)
+
+Respect prefers-reduced-motion
+
+5) Typography system (editorial hierarchy)
+5.1 Font pairing options
+
+Premium (true fashion editorial feel):
+
+Display serif: Canela / Didot / Editorial New
+
+Text sans: Söhne / Neue Haas Grotesk / Graphik
+
+Open-source fallback (very good, web-safe):
+
+Display serif: Bodoni Moda or Fraunces
+
+Text sans: Inter
+
+Mono (optional for meta): system mono
+
+5.2 Hierarchy & usage
+
+Masthead / Cover title: --step-3, tight tracking, large negative space
+
+Story title: --step-2
+
+Deck (subtitle): --step-1 with generous line-height
+
+Body: --step-0, line-height: 1.55–1.7
+
+Captions: --step--1, line-height: 1.4, slightly muted
+
+5.3 Spacing rules (what makes it “magazine”)
+
+Captions snap to baseline rhythm:
+
+margin-bottom increments of var(--baseline)
+
+Headings have deliberate “breathing room”
+
+Avoid cramped UI density (your current UI is functional; editorial pages should be calmer).
+
+6) Interaction patterns (editorial, not “app-y”)
+6.1 Page transitions
+
+Between Issue TOC ↔ Reading mode:
+
+Fade + slight translate
+
+Optional: View Transitions API for “morphing” the clicked image into the hero
+
+6.2 Hover & focus states
+
+Replace strong hover overlays with:
+
+subtle lift
+
+caption reveal with low-contrast fade
+
+Keep keyboard navigation first-class (you already support Enter/Space on cards + arrows in lightbox).
+
+6.3 Scrolling behavior
+
+Smooth scrolling for TOC jumps
+
+Optional “spread snap” mode:
+
+scroll-snap-type: y proximity;
+
+spreads are snap points (only in Reading mode)
+
+6.4 Lightbox evolution (from viewer → editorial reader)
+
+Your current lightbox is a good base.
+Upgrade it into:
+
+A Reader Overlay:
+
+left: media
+
+right: caption/credits/story notes
+
+bottom: progress indicator (like “page 4 / 18”)
+
+7) Implementation roadmap (phased, realistic)
+Phase 1 — Foundations (1–2 days)
+
+Introduce design tokens + new typography stack (keep existing variables, extend them). 
+
+portfolio
+
+Refactor layout into components:
+
+IssueCover, TOC, Spread, Mosaic, VideoFeature, ContactSheet
+
+Phase 2 — Templates (2–4 days)
+
+Implement the 5 templates above using CSS Grid.
+
+Add “mode switch”:
+
+Index mode (current grid evolves into TOC/contact sheet)
+
+Reading mode (story flow with spreads)
+
+Phase 3 — Video feature system (1–2 days)
+
+Build custom video shell component
+
+Poster → play transition
+
+Offscreen pause + accessibility pass
+
+Phase 4 — Editorial interactions (1–3 days)
+
+Reader overlay replacing/augmenting lightbox
+
+TOC jump links
+
+Optional scroll-snap spreads
+
+Motion preferences + performance polish
+
+Phase 5 — Curation tooling (ongoing)
+
+Add optional metadata fields to ASSETS:
+
+layout, caption, credit, story, order, featured
+
+Create a simple “curation rule set”:
+
+first 1–3 items in each album become TOC features
+
+videos become VideoFeature pages by default
+
+8) What you’ll keep vs replace (so this doesn’t turn into a rewrite-for-fun)
+
+Keep (because it already works):
+
+Asset data model + filtering logic structure
+
+Lazy-loading approach
+
+Keyboard navigation patterns in principle
+
+Replace / elevate:
+
+The grid’s “uniform 4:3 card system” (it’s the biggest anti-editorial constraint).
+
+The lightbox’s “just show media” approach → Reader Overlay with typography and pacing. 
+
+portfolio
+
+Video as “controls in a modal” → Video as a designed feature page.

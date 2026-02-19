@@ -1,0 +1,155 @@
+[
+  {
+    "tag": "70s_aesthetic",
+    "label": "70s & Retro",
+    "keywords": [
+      "vintage",
+      "retro",
+      "seventies",
+      "1970s",
+      "orange",
+      "neon",
+      "poster"
+    ]
+  },
+  {
+    "tag": "urban_street",
+    "label": "Urban & Street",
+    "keywords": [
+      "street",
+      "city",
+      "urban",
+      "alley",
+      "market",
+      "station",
+      "crossing"
+    ]
+  },
+  {
+    "tag": "people_portraits",
+    "label": "People & Portraits",
+    "keywords": [
+      "woman",
+      "man",
+      "portrait",
+      "girl",
+      "family",
+      "couple",
+      "face"
+    ]
+  },
+  {
+    "tag": "interior_spaces",
+    "label": "Interior Spaces",
+    "keywords": [
+      "office",
+      "room",
+      "kitchen",
+      "cafe",
+      "lounge",
+      "workspace",
+      "studio"
+    ]
+  },
+  {
+    "tag": "scifi_futurism",
+    "label": "Sci-Fi & Futurism",
+    "keywords": [
+      "robot",
+      "astronaut",
+      "cyberpunk",
+      "steampunk",
+      "futuristic",
+      "digital",
+      "space"
+    ]
+  },
+  {
+    "tag": "night_moody",
+    "label": "Night & Moody",
+    "keywords": [
+      "night",
+      "neon",
+      "rainy",
+      "evening",
+      "silhouette",
+      "shadow",
+      "dark"
+    ]
+  },
+  {
+    "tag": "graphic_design",
+    "label": "Graphic & Design",
+    "keywords": [
+      "geometric",
+      "abstract",
+      "design",
+      "minimalist",
+      "illustration",
+      "collage"
+    ]
+  },
+  {
+    "tag": "outdoor_landscape",
+    "label": "Outdoor & Landscape",
+    "keywords": [
+      "street",
+      "coastal",
+      "desert",
+      "sunset",
+      "beach",
+      "village",
+      "field"
+    ]
+  },
+  {
+    "tag": "work_business",
+    "label": "Work & Business",
+    "keywords": [
+      "office",
+      "meeting",
+      "workspace",
+      "computer",
+      "desk",
+      "professional",
+      "corporate"
+    ]
+  },
+  {
+    "tag": "food_leisure",
+    "label": "Food & Leisure",
+    "keywords": [
+      "coffee",
+      "cafe",
+      "diner",
+      "restaurant",
+      "eating",
+      "shopping",
+      "grocery"
+    ]
+  },
+  {
+    "tag": "industrial_decay",
+    "label": "Industrial & Decay",
+    "keywords": [
+      "abandoned",
+      "industrial",
+      "concrete",
+      "ruins",
+      "corridor",
+      "station"
+    ]
+  },
+  {
+    "tag": "european_cities",
+    "label": "European Cities",
+    "keywords": [
+      "london",
+      "rome",
+      "paris",
+      "oviedo",
+      "italian",
+      "vintage"
+    ]
+  }
+]

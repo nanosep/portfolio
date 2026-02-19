@@ -1,0 +1,16 @@
+# Media folders (too large for GitHub)
+70s/
+brands/
+Concept/
+fun/
+Illustration/
+
+# System files
+desktop.ini
+.DS_Store
+__pycache__/
+node_modules/
+thumbs/
+
+# Logs
+rename-log.json
