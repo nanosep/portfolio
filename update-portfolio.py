@@ -32,11 +32,13 @@ import re
 import json
 import argparse
 import datetime
+from urllib.parse import quote
 
 # ── Configuración ──────────────────────────────────────────────────────────────
 
 SCRIPT_DIR   = os.path.dirname(os.path.abspath(__file__))
 HTML_FILE    = os.path.join(SCRIPT_DIR, 'portfolio.html')
+MEDIA_BASE   = 'https://pub-b9ca1bb218394f22a6f5fcda97c08cbb.r2.dev'  # CDN for media files
 PHOTO_EXTS   = {'.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif'}
 VIDEO_EXTS   = {'.mp4', '.mov', '.webm', '.avi'}
 
@@ -177,13 +179,19 @@ def merge_meta(asset, meta_for_file):
             asset[field] = meta_for_file[field]
 
 
+def media_url(path):
+    """Construye URL CDN con caracteres especiales escapados."""
+    return MEDIA_BASE + '/' + quote(path, safe='/')
+
 def js_entry(asset):
     """Formatea un objeto JS de un ítem."""
+    src_url   = media_url(asset['src'])
+    thumb_url = media_url(asset['thumb'])
     lines = [
         "  {",
         f"    type:  '{asset['type']}',",
-        f"    src:   '{asset['src']}',",
-        f"    thumb: '{asset['thumb']}',",
+        f"    src:   '{src_url}',",
+        f"    thumb: '{thumb_url}',",
         f"    title: '{asset['title']}',",
         f"    album: '{asset['album']}',",
         f"    date:  '{asset['date']}'",
